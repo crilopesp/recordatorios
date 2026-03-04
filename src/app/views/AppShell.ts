@@ -1,7 +1,7 @@
 export interface AppShellRefs {
-  appShell: HTMLElement;
+  sectionPalette: HTMLElement;
+  sectionPaletteInput: HTMLInputElement;
   editorLayout: HTMLElement;
-  sectionsSidebar: HTMLElement;
   findBar: HTMLElement;
   findInput: HTMLInputElement;
   findPreviousButton: HTMLButtonElement;
@@ -9,9 +9,6 @@ export interface AppShellRefs {
   findCloseButton: HTMLButtonElement;
   sectionsList: HTMLUListElement;
   editorRoot: HTMLElement;
-  sectionsToggleButton: HTMLButtonElement;
-  searchToggleButton: HTMLButtonElement;
-  pathText: HTMLElement;
 }
 
 function requireElement<T extends Element>(root: ParentNode, selector: string): T {
@@ -27,9 +24,6 @@ export function renderAppShell(container: HTMLElement): AppShellRefs {
     <main id="appShell" class="app-shell">
       <div id="appSheet" class="app-sheet">
         <div id="editorLayout" class="editor-layout">
-          <aside id="sectionsSidebar" class="sections-sidebar" aria-label="Secciones del documento">
-            <ul id="sectionsList" class="sections-list"></ul>
-          </aside>
           <section class="editor-panel">
             <div id="findBar" class="findbar" hidden>
               <label class="findbar-label" for="findInput">Buscar</label>
@@ -41,38 +35,28 @@ export function renderAppShell(container: HTMLElement): AppShellRefs {
             <section id="editorRoot" class="editor-root" aria-label="Task editor"></section>
           </section>
         </div>
-
-        <footer class="statusbar">
-          <div class="statusbar-controls">
-            <button
-              id="sectionsToggleButton"
-              class="statusbar-icon-button"
-              type="button"
-              aria-label="Mostrar u ocultar secciones"
-              title="Secciones"
-            >
-              <span class="icon icon--sections" aria-hidden="true"></span>
-            </button>
-            <button
-              id="searchToggleButton"
-              class="statusbar-icon-button"
-              type="button"
-              aria-label="Mostrar u ocultar busqueda"
-              title="Buscar"
-            >
-              <span class="icon icon--search" aria-hidden="true"></span>
-            </button>
+        <div id="sectionPalette" class="section-palette" hidden>
+          <div class="section-palette__panel" role="dialog" aria-modal="true" aria-label="Ir a seccion">
+            <div class="section-palette__title">Secciones</div>
+            <input
+              id="sectionPaletteInput"
+              class="section-palette__input"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Buscar seccion..."
+            />
+            <ul id="sectionsList" class="sections-list section-palette__list"></ul>
           </div>
-          <div id="pathText"></div>
-        </footer>
+        </div>
       </div>
     </main>
   `;
 
   return {
-    appShell: requireElement<HTMLElement>(container, "#appShell"),
     editorLayout: requireElement<HTMLElement>(container, "#editorLayout"),
-    sectionsSidebar: requireElement<HTMLElement>(container, "#sectionsSidebar"),
+    sectionPalette: requireElement<HTMLElement>(container, "#sectionPalette"),
+    sectionPaletteInput: requireElement<HTMLInputElement>(container, "#sectionPaletteInput"),
     findBar: requireElement<HTMLElement>(container, "#findBar"),
     findInput: requireElement<HTMLInputElement>(container, "#findInput"),
     findPreviousButton: requireElement<HTMLButtonElement>(container, "#findPreviousButton"),
@@ -80,8 +64,5 @@ export function renderAppShell(container: HTMLElement): AppShellRefs {
     findCloseButton: requireElement<HTMLButtonElement>(container, "#findCloseButton"),
     sectionsList: requireElement<HTMLUListElement>(container, "#sectionsList"),
     editorRoot: requireElement<HTMLElement>(container, "#editorRoot"),
-    sectionsToggleButton: requireElement<HTMLButtonElement>(container, "#sectionsToggleButton"),
-    searchToggleButton: requireElement<HTMLButtonElement>(container, "#searchToggleButton"),
-    pathText: requireElement<HTMLElement>(container, "#pathText"),
   };
 }

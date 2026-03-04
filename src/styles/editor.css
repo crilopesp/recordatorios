@@ -1,47 +1,63 @@
 .editor-root .cm-editor {
   height: 100%;
   background-color: #fff;
-  color: var(--text);
-  padding: 0.9rem 0.9rem;
+  color: var(--color-ink);
 }
 
 .editor-root .cm-scroller {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace !important;
-  font-size: 1rem;
+  font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace !important;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1.45;
   background-color: #fff;
   height: 100%;
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: geometricPrecision;
+  font-smooth: auto;
+}
+
+.cm-scroller {
+  padding-inline: 1rem;
+  padding-block: 2rem;
 }
 
 .cm-scroller:has(.cm-layer-above) {
   padding-left: 2.7rem;
 }
 
-.editor-root .cm-content {
-  padding: 0.55rem 0 1.1rem 0m;
+.cm-layer-above {
+  padding-block: 2rem;
 }
 
 .editor-root .cm-line {
+  --cm-indent: 0ch;
   padding: 0 0.9rem 0 0.45rem;
   position: relative;
+  text-indent: calc(-1 * var(--cm-indent));
+  color: var(--color-ink);
 }
 
 .editor-root .cm-line.cm-line-seccion {
-  background-color: #eceff3;
+}
+
+.editor-root .cm-line-indented {
+  padding-left: calc(0.45rem + var(--cm-indent));
+  color: var(--color-ink-dark);
 }
 
 .cm-line-seccion {
-  font-size: 0.95rem;
   font-weight: 900;
+  color: var(--color-black);
 }
 
 .editor-root .cm-teleported-gutter {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 2.1rem;
   bottom: 0;
   width: 2.7rem;
   pointer-events: none;
+
 }
 
 .editor-root .cm-teleported-gutter-marker {
@@ -65,7 +81,7 @@
 
 .editor-root .cm-section-title,
 .editor-root .cm-subsection-title {
-  color: var(--text);
+  color: var(--color-ink);
 }
 
 .editor-root .cm-subsection-title {

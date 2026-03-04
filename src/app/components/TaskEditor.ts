@@ -1,5 +1,15 @@
-import { addCursorAbove, addCursorBelow, copyLineDown, copyLineUp, defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { EditorState, RangeSetBuilder, StateEffect } from "@codemirror/state";
+import {
+  addCursorAbove,
+  addCursorBelow,
+  copyLineDown,
+  copyLineUp,
+  defaultKeymap,
+  history,
+  historyKeymap,
+  indentLess,
+  insertTab,
+} from "@codemirror/commands";
+import { countColumn, EditorState, RangeSetBuilder, StateEffect } from "@codemirror/state";
 import {
   Decoration,
   type DecorationSet,
@@ -18,6 +28,7 @@ export interface TaskEditorOptions {
   onFindNextRequested: () => void;
   onFindPreviousRequested: () => void;
   onOpenFileRequested: () => void;
+  onSectionsPaletteRequested: () => void;
 }
 
 function findMatch(haystack: string, needle: string, from: number, backwards: boolean): number {
@@ -85,6 +96,23 @@ function isFillHighlighterLine(lineText: string): boolean {
   }
 
   return cursor < lineText.length;
+}
+
+function getIndentColumns(lineText: string, tabSize: number): number {
+  let cursor = 0;
+  while (cursor < lineText.length) {
+    const code = lineText.charCodeAt(cursor);
+    if (code !== 32 && code !== 9) {
+      break;
+    }
+    cursor += 1;
+  }
+
+  if (cursor === 0) {
+    return 0;
+  }
+
+  return countColumn(lineText.slice(0, cursor), tabSize);
 }
 
 function isTaskLine(lineText: string): boolean {
@@ -160,11 +188,13 @@ const teleportedTaskGutter = ViewPlugin.fromClass(
         }
         seenLines.add(line.number);
 
+        if (!isTaskLine(line.text)) {
+          continue;
+        }
+
         const marker = document.createElement("div");
         marker.className = "cm-teleported-gutter-marker";
-        if (isTaskLine(line.text)) {
-          marker.appendChild(createTaskChevronIcon());
-        }
+        marker.appendChild(createTaskChevronIcon());
         marker.style.top = `${Math.round(topPadding + block.top)}px`;
         marker.style.height = `${Math.max(1, Math.round(block.height))}px`;
         fragment.appendChild(marker);
@@ -193,6 +223,20 @@ function buildHeadingDecorations(view: EditorView): DecorationSet {
 
       if (isFillHighlighterLine(line.text)) {
         builder.add(line.from, line.to, fillHighlighterLineDecoration);
+      }
+
+      const indentColumns = getIndentColumns(line.text, view.state.tabSize);
+      if (indentColumns > 0) {
+        builder.add(
+          line.from,
+          line.from,
+          Decoration.line({
+            attributes: {
+              class: "cm-line-indented",
+              style: `--cm-indent: ${indentColumns}ch`,
+            },
+          })
+        );
       }
 
       if (line.number >= doc.lines) {
@@ -302,8 +346,11 @@ export class TaskEditor {
         teleportedTaskGutter,
         EditorView.lineWrapping,
         keymap.of([
+          { key: "Tab", run: insertTab },
+          { key: "Shift-Tab", run: indentLess },
           ...defaultKeymap,
-          ...historyKeymap,
+        ...historyKeymap,
+          { key: "Mod-p", run: () => (options.onSectionsPaletteRequested(), true) },
           { key: "Mod-s", run: () => (options.onSaveRequested(), true) },
           { key: "Mod-f", run: () => (options.onFindRequested(), true) },
           { key: "F3", run: () => (options.onFindNextRequested(), true) },

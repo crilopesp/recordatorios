@@ -33,6 +33,18 @@ npm install
 npm run dev
 ```
 
+### Solo web (incluye iPhone/iPad)
+
+```bash
+npm install
+npm run dev:web
+```
+
+La app detecta automaticamente si corre en Tauri o en navegador:
+
+- En Tauri: abre/guarda directo en archivo `.txt`.
+- En web: abre `.txt` con selector del navegador (incluye app Archivos/iCloud en iOS), guarda borrador en `localStorage` y `Ctrl+S` descarga un `.txt` actualizado.
+
 ## Build
 
 ```bash

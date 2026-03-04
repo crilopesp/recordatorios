@@ -1,0 +1,1 @@
+APPIMAGE_EXTRACT_AND_RUN=1 NO_STRIP=1 npm run build
