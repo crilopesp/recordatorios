@@ -138,27 +138,17 @@ const subsectionLineClassDecoration = Decoration.line({ attributes: { class: "cm
 const fillHighlighterLineDecoration = Decoration.mark({ class: "fill-highlighter" });
 const searchMatchDecoration = Decoration.mark({ class: "cm-search-match" });
 
-function createTaskChevronIcon(): SVGSVGElement {
-  const svgNs = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(svgNs, "svg");
-  svg.setAttribute("xmlns", svgNs);
-  svg.setAttribute("width", "20");
-  svg.setAttribute("height", "20");
-  svg.setAttribute("viewBox", "0 0 24 24");
-  svg.setAttribute("aria-hidden", "true");
-
-  const path = document.createElementNS(svgNs, "path");
-  path.setAttribute("fill", "currentColor");
-  path.setAttribute("d", "m10 17l5-5l-5-5z");
-  svg.appendChild(path);
-
-  return svg;
+function createTaskGutterIcon(symbol: string): HTMLSpanElement {
+  const marker = document.createElement("span");
+  marker.className = "cm-teleported-gutter-icon";
+  marker.textContent = symbol;
+  marker.setAttribute("aria-hidden", "true");
+  return marker;
 }
 
 const teleportedTaskGutter = ViewPlugin.fromClass(
   class {
     private readonly dom: HTMLDivElement;
-
     constructor(view: EditorView) {
       this.dom = document.createElement("div");
       this.dom.className = "cm-teleported-gutter";
@@ -180,7 +170,6 @@ const teleportedTaskGutter = ViewPlugin.fromClass(
       const fragment = document.createDocumentFragment();
       const topPadding = view.documentPadding.top;
       const seenLines = new Set<number>();
-
       for (const block of view.viewportLineBlocks) {
         const line = view.state.doc.lineAt(block.from);
         if (seenLines.has(line.number)) {
@@ -194,7 +183,7 @@ const teleportedTaskGutter = ViewPlugin.fromClass(
 
         const marker = document.createElement("div");
         marker.className = "cm-teleported-gutter-marker";
-        marker.appendChild(createTaskChevronIcon());
+        marker.appendChild(createTaskGutterIcon("-"));
         marker.style.top = `${Math.round(topPadding + block.top)}px`;
         marker.style.height = `${Math.max(1, Math.round(block.height))}px`;
         fragment.appendChild(marker);

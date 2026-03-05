@@ -17,6 +17,7 @@ const WEB_LAST_FILE_TEXT_KEY = "recordatorios.web.lastFileText";
 export class AppController {
   private readonly editor: TaskEditor;
   private readonly sectionsSidebar: SectionsSidebar;
+  private readonly sectionsList: HTMLUListElement;
   private readonly sectionPalette: HTMLElement;
   private readonly sectionPaletteInput: HTMLInputElement;
   private readonly findBar: HTMLElement;
@@ -37,6 +38,7 @@ export class AppController {
   private tauriDialogOpen: DialogOpenFn | null = null;
 
   constructor(refs: AppShellRefs) {
+    this.sectionsList = refs.sectionsList;
     this.sectionPalette = refs.sectionPalette;
     this.sectionPaletteInput = refs.sectionPaletteInput;
     this.findBar = refs.findBar;
@@ -355,6 +357,16 @@ export class AppController {
         this.activateSelectedSection();
       }
     });
+
+    this.sectionsList.addEventListener("click", () => {
+      this.visibleSectionButtons = this.sectionsSidebar.getVisibleSectionButtons();
+      if (this.visibleSectionButtons.length === 0) {
+        this.selectedSectionIndex = -1;
+      } else if (this.selectedSectionIndex >= this.visibleSectionButtons.length) {
+        this.selectedSectionIndex = this.visibleSectionButtons.length - 1;
+      }
+      this.setSectionSelection(this.selectedSectionIndex);
+    });
   }
 
   private updateSections(sections: { name: string; lineNumber: number; level: 1 | 2 }[]): void {
@@ -364,16 +376,8 @@ export class AppController {
 
   private applySectionFilter(rawQuery: string): void {
     const query = rawQuery.trim().toLocaleLowerCase();
-    const buttons = this.sectionPalette.querySelectorAll<HTMLButtonElement>("button.section-link[data-line]");
-    this.visibleSectionButtons = [];
-
-    for (const button of buttons) {
-      const match = !query || (button.textContent?.toLocaleLowerCase() || "").includes(query);
-      button.hidden = !match;
-      if (match) {
-        this.visibleSectionButtons.push(button);
-      }
-    }
+    this.sectionsSidebar.setFilter(query);
+    this.visibleSectionButtons = this.sectionsSidebar.getVisibleSectionButtons();
   }
 
   private updateSectionPaletteVisibility(): void {

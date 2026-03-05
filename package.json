@@ -8,7 +8,8 @@
     "build:web": "vite build",
     "tauri": "tauri",
     "dev": "tauri dev",
-    "build": "APPIMAGE_EXTRACT_AND_RUN=1 NO_STRIP=1 tauri build"
+    "build": "APPIMAGE_EXTRACT_AND_RUN=1 NO_STRIP=1 tauri build",
+    "build:macos": "tauri build --bundles dmg"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.8.1",

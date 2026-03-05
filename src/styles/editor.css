@@ -11,6 +11,8 @@
   line-height: 1.45;
   background-color: #fff;
   height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
   -webkit-font-smoothing: subpixel-antialiased;
   text-rendering: geometricPrecision;
   font-smooth: auto;
@@ -73,6 +75,10 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
+}
+
+.editor-root .cm-teleported-gutter-icon {
+  display: inline-block;
 }
 
 .editor-root .cm-activeLine {

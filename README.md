@@ -52,6 +52,23 @@ npm run build:web
 npm run build
 ```
 
+### macOS (.dmg)
+
+En una Mac:
+
+```bash
+npm install
+npm run build:macos
+```
+
+Salida esperada:
+
+`src-tauri/target/release/bundle/dmg/*.dmg`
+
+Tambien puedes generarlo desde GitHub Actions con el workflow:
+
+`.github/workflows/build-macos-dmg.yml`
+
 ## Flujo de uso
 
 1. Al iniciar, la app intenta reabrir el ultimo `.txt` usado.
