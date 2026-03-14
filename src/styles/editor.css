@@ -1,15 +1,19 @@
+.editor-root {
+  --editor-font-size: 14px;
+}
+
 .editor-root .cm-editor {
   height: 100%;
-  background-color: #fff;
+  background-color: var(--bg-panel);
   color: var(--color-ink);
 }
 
 .editor-root .cm-scroller {
   font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace !important;
-  font-size: 14px;
+  font-size: var(--editor-font-size);
   font-weight: 500;
   line-height: 1.45;
-  background-color: #fff;
+  background-color: var(--bg-panel);
   height: 100%;
   overflow: auto;
   overscroll-behavior: contain;
@@ -49,7 +53,7 @@
 
 .cm-line-seccion {
   font-weight: 900;
-  color: var(--color-black);
+  color: var(--color-ink);
 }
 
 .editor-root .cm-teleported-gutter {
@@ -69,7 +73,7 @@
   min-width: 2.7rem;
   text-align: right;
   padding: 0 0.55rem 0 0.75rem;
-  color: #8492a4;
+  color: var(--text-muted);
   line-height: 1.45;
   font-weight: 600;
   display: flex;
@@ -110,8 +114,8 @@
 }
 
 .editor-root .cm-search-match {
-  background-color: color-mix(in oklab, var(--focus) 21%, white);
-  box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--focus) 50%, black);
+  background-color: color-mix(in oklab, var(--focus) 26%, var(--bg-panel));
+  box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--focus) 58%, var(--color-black));
   border-radius: 2px;
 }
 
@@ -140,11 +144,24 @@
 .cm-scroller::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--text-muted) 28%, white);
+  background: color-mix(in oklab, var(--text-muted) 34%, transparent);
   background-clip: content-box;
 }
 
 .cm-scroller::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in oklab, var(--text-muted) 42%, white);
+  background: color-mix(in oklab, var(--text-muted) 52%, transparent);
   background-clip: content-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  .editor-root .fill-highlighter {
+    background:
+      linear-gradient(
+        -1deg,
+        transparent 10%,
+        rgb(255 224 120 / 52%) 10%,
+        rgb(255 224 120 / 52%) 84%,
+        transparent 84%
+      );
+  }
 }

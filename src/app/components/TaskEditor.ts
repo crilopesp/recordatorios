@@ -31,6 +31,11 @@ export interface TaskEditorOptions {
   onSectionsPaletteRequested: () => void;
 }
 
+const DEFAULT_EDITOR_FONT_SIZE_PX = 14;
+const MIN_EDITOR_FONT_SIZE_PX = 10;
+const MAX_EDITOR_FONT_SIZE_PX = 32;
+const EDITOR_FONT_SIZE_STEP_PX = 1;
+
 function findMatch(haystack: string, needle: string, from: number, backwards: boolean): number {
   if (!backwards) {
     let index = haystack.indexOf(needle, from);
@@ -325,6 +330,7 @@ export class TaskEditor {
   private readonly view: EditorView;
   private suppressDocSync = false;
   private normalizedDocCache: string | null = null;
+  private editorFontSizePx = DEFAULT_EDITOR_FONT_SIZE_PX;
 
   constructor(options: TaskEditorOptions) {
     const state = EditorState.create({
@@ -338,7 +344,7 @@ export class TaskEditor {
           { key: "Tab", run: insertTab },
           { key: "Shift-Tab", run: indentLess },
           ...defaultKeymap,
-        ...historyKeymap,
+          ...historyKeymap,
           { key: "Mod-p", run: () => (options.onSectionsPaletteRequested(), true) },
           { key: "Mod-s", run: () => (options.onSaveRequested(), true) },
           { key: "Mod-f", run: () => (options.onFindRequested(), true) },
@@ -350,6 +356,25 @@ export class TaskEditor {
           { key: "Alt-Shift-ArrowUp", run: copyLineUp },
           { key: "Alt-Shift-ArrowDown", run: copyLineDown },
         ]),
+        EditorView.domEventHandlers({
+          keydown: (event) => {
+            if (!event.ctrlKey || event.metaKey || event.altKey) {
+              return false;
+            }
+
+            if (event.key === "-" || event.key === "_") {
+              event.preventDefault();
+              return this.adjustEditorFontSize(-EDITOR_FONT_SIZE_STEP_PX);
+            }
+
+            if (event.key === "=" || event.key === "+") {
+              event.preventDefault();
+              return this.adjustEditorFontSize(EDITOR_FONT_SIZE_STEP_PX);
+            }
+
+            return false;
+          },
+        }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged && !this.suppressDocSync) {
             this.invalidateSearchCache();
@@ -365,6 +390,7 @@ export class TaskEditor {
       state,
       parent: options.root,
     });
+    this.applyEditorFontSize();
   }
 
   setDocument(text: string): void {
@@ -454,5 +480,24 @@ export class TaskEditor {
 
   private invalidateSearchCache(): void {
     this.normalizedDocCache = null;
+  }
+
+  private adjustEditorFontSize(delta: number): boolean {
+    const nextSize = Math.max(
+      MIN_EDITOR_FONT_SIZE_PX,
+      Math.min(MAX_EDITOR_FONT_SIZE_PX, this.editorFontSizePx + delta)
+    );
+
+    if (nextSize === this.editorFontSizePx) {
+      return true;
+    }
+
+    this.editorFontSizePx = nextSize;
+    this.applyEditorFontSize();
+    return true;
+  }
+
+  private applyEditorFontSize(): void {
+    this.view.dom.style.setProperty("--editor-font-size", `${this.editorFontSizePx}px`);
   }
 }

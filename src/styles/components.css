@@ -1,7 +1,9 @@
 :root {
+  color-scheme: light;
   --bg-window: #eef0f3;
   --bg-surface: #f8f9fb;
   --bg-panel: #ffffff;
+  --bg-elevated: #ffffff;
   --bg-sidebar: #f1f3f6;
   --bg-hover: #e8edf4;
   --border: #d5dce5;
@@ -43,6 +45,34 @@
   --color-ink-lightest: oklch(var(--lch-ink-lightest));
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg-window: #131821;
+    --bg-surface: #1a2029;
+    --bg-panel: #202833;
+    --bg-elevated: #262f3b;
+    --bg-sidebar: #1d2530;
+    --bg-hover: #2f3b4b;
+    --border: #354457;
+    --text: #d5deeb;
+    --text-muted: #9aa8bc;
+    --focus: #7fb1ff;
+    --accent: #78a8ff;
+    --accent-soft: color-mix(in oklab, var(--accent) 28%, transparent);
+
+    --lch-canvas: 18% 0.01 250;
+    --lch-ink-inverted: var(--lch-black);
+    --lch-ink-darkest: 95% 0.009 252;
+    --lch-ink-darker: 86% 0.01 252;
+    --lch-ink-dark: 74% 0.01 252;
+    --lch-ink-medium: 64% 0.01 252;
+    --lch-ink-light: 50% 0.011 252;
+    --lch-ink-lighter: 40% 0.012 252;
+    --lch-ink-lightest: 30% 0.012 252;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -65,7 +95,11 @@ body {
 .app-shell {
   width: 100%;
   height: 100dvh;
-  background: linear-gradient(180deg, #f4f6f9 0%, var(--bg-window) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--bg-surface) 72%, var(--bg-window)) 0%,
+    var(--bg-window) 100%
+  );
   font-size: 13px;
 }
 
@@ -95,7 +129,7 @@ body {
   justify-content: center;
   padding-top: 10vh;
   z-index: 20;
-  background: color-mix(in oklab, var(--lch-black) 10%, transparent);
+  background: color-mix(in oklab, var(--color-black) 35%, transparent);
 }
 
 .section-palette[hidden] {
@@ -104,10 +138,10 @@ body {
 
 .section-palette__panel {
   width: min(680px, calc(100% - 2rem));
-  background: #fff;
-  border: 1px solid color-mix(in oklab, var(--border) 80%, white);
+  background: var(--bg-elevated);
+  border: 1px solid color-mix(in oklab, var(--border) 86%, var(--bg-elevated));
   border-radius: 10px;
-  box-shadow: 0 14px 44px color-mix(in oklab, var(--lch-black) 28%, transparent);
+  box-shadow: 0 14px 44px color-mix(in oklab, var(--color-black) 38%, transparent);
   padding: 0.7rem 0.8rem 0.8rem;
 }
 
@@ -120,11 +154,12 @@ body {
 .section-palette__input {
   width: 100%;
   height: 30px;
-  border: 1px solid color-mix(in oklab, var(--border) 72%, white);
+  border: 1px solid color-mix(in oklab, var(--border) 74%, var(--bg-panel));
   border-radius: 6px;
   padding: 0 0.55rem;
   font: inherit;
   color: var(--text);
+  background: var(--bg-panel);
 }
 
 .section-palette__list {
@@ -226,12 +261,12 @@ body {
   padding: 0 0.55rem;
   font: inherit;
   color: var(--text);
-  background: #fff;
+  background: var(--bg-panel);
 }
 
 .findbar-input:focus-visible {
   outline: 1px solid color-mix(in oklab, var(--focus) 70%, transparent);
-  border-color: color-mix(in oklab, var(--focus) 58%, white);
+  border-color: color-mix(in oklab, var(--focus) 58%, var(--bg-panel));
   box-shadow: 0 0 0 2px color-mix(in oklab, var(--focus) 14%, transparent);
   outline-offset: 0;
 }
@@ -242,7 +277,7 @@ body {
   height: 27px;
   border: 1px solid var(--border);
   border-radius: 4px;
-  background: #fff;
+  background: var(--bg-panel);
   color: var(--text-muted);
   cursor: pointer;
   font-size: 0.8rem;
